@@ -1,99 +1,107 @@
-📊 OR Toolkit – Big-M Simplex + Branch & Bound Solver (Python)
+📊 OR Toolkit — Big-M Simplex + Branch & Bound (Python)
 
 A terminal-based Operations Research toolkit implemented in pure Python, designed for academic usage and step-by-step LP solving.
-Supports:
 
-Linear Programming (LP) Maximization
+🚀 Supports
+
+Linear Programming (Maximization)
 
 Branch & Bound for Integer Programming
 
-Big-M Simplex with slack, surplus, and artificial variables
+Big-M Simplex with:
 
-≤, ≥, and = constraints
+Slack variables
 
-No external dependencies
+Surplus variables
 
-Simplex tableau printed at every iteration for learning or exam practice
+Artificial variables
 
-✔ Works offline
-✔ Pure Python
-✔ Transparent simplex iterations
-✔ Perfect for Operations Research assignments, exams, and viva
+General constraints:
 
-🧠 Why This Solver Is Special
+<= (less-than equal)
 
-Typical simple simplex implementations only support ≤ constraints and cannot correctly solve ≥ or = constraints.
+>= (greater-than equal)
 
-This toolkit uses the Big-M method, allowing it to:
+= (equality)
 
-Add slack variables for ≤ constraints
+No external libraries required
 
-Add surplus + artificial variables for ≥ constraints
+Full simplex tableau printed at every iteration
 
-Add artificial variables for = constraints
+✅ Why This Is Useful
 
-Automatically build a valid initial BFS
+Most student simplex implementations only work for <= constraints.
+This solver is more academically correct, because:
 
-Solve LPs with general inequality structure
+<= constraints → slack
 
-Use the same LP solver inside Branch & Bound
+>= constraints → surplus + artificial
 
-This makes it a fully correct academic implementation.
+= constraints → artificial
+
+Big-M method builds a valid initial BFS
+
+Works fully for both LP and Integer LP
+
+Branch & Bound uses the same LP solver internally
+
+🧠 This is a fully transparent educational solver, ideal for exams or OR learning.
 
 ✨ Features
-Linear Programming (Simplex)
+Linear Programming (Simplex — Max)
 
-Maximization problems
+Fully handles: <=, >=, =
 
-Fully supports constraints: ≤, ≥, =
+Builds valid Basic Feasible Solutions using Big-M
 
-Full tableau printing at every iteration
+Tableau printed at every iteration
 
-Artificial variable detection (infeasibility check)
+Detects infeasibility using artificial variables
 
-Safe iteration protection
+Detects unboundedness
 
-Integer Programming
+Safe pivoting with iteration limits
 
-Uses Branch & Bound
+Integer Programming (Branch & Bound)
 
-LP relaxation solved using the same Big-M simplex
+Relaxation solved using the same Big-M simplex
 
 Integer feasibility check
 
-Branching:
+Automatic branching rules:
 
 xk ≤ floor(xk)
 
 xk ≥ ceil(xk)
 
-No External Libraries
+Pure Python — runs offline
 
-Pure Python
-
-Can be run in an exam lab without installing dependencies
-
-🏷️ Input Format
+🧩 Input Format
 Objective Function
 
-Example:
+For:
 
 Max Z = 100 x1 + 150 x2
 
 
-You enter:
+Enter:
 
 100 150
 
 Constraint Format
 
-Each constraint consists of:
+Each constraint has two parts:
 
-Coefficient row
-
-b and sense (LE, GE, or EQ)
+1️⃣ Coefficient row
+2️⃣ RHS + sense (LE / GE / EQ)
 
 Example:
+
+A Row 1: 15 30
+b[1] and sense: 200 LE
+
+
+Multiple constraints example:
 
 A Row 1: 15 30
 b[1] and sense: 200 LE
@@ -104,20 +112,16 @@ b[2] and sense: 40 LE
 A Row 3: 1 0
 b[3] and sense: 2 GE
 
-
-Valid sense types:
-
-LE or <=
-
-GE or >=
-
-EQ or =
-
+Valid sense types
+Input	Meaning
+LE or <=	≤ constraint
+GE or >=	≥ constraint
+EQ or =	Equality
 🖥️ How to Run
 python or_toolkit.py
 
 
-Menu appears:
+Main menu:
 
 =======================================
    OR TOOLKIT (BIG-M SIMPLEX + B&B)
@@ -127,125 +131,157 @@ Menu appears:
 3) Exit
 =======================================
 
-🔍 Example LP Use
+🔍 Example — LP Maximization
+
+Example input
+
 Number of variables: 2
 Number of constraints: 3
-Objective: 100 150
+
+Objective coefficients: 100 150
+
 A Row 1: 15 30
 b[1] and sense: 200 LE
+
 A Row 2: 8 4
 b[2] and sense: 40 LE
+
 A Row 3: 1 0
 b[3] and sense: 2 GE
 
 
 The solver will:
 
-Build slack/surplus/artificial variables
+Add slack/surplus/artificial variables automatically
 
-Run Big-M Simplex
+Build a valid BFS using Big-M
+
+Run simplex pivot iterations
 
 Print every tableau
 
-Show optimal Z and x values
+Display optimal solution
 
-🕌 Example Integer Problem (Branch & Bound)
+🕌 Example — Integer Programming
 
-Choose menu option 2:
+Choose option 2 in the menu.
 
 Number of variables: 2
 Number of constraints: 2
-Objective: 100 150
+
+Objective coefficients: 100 150
+
 A Row 1: 15 30
 b[1] and sense: 200 LE
+
 A Row 2: 8 4
 b[2] and sense: 40 LE
 
 
-The solver prints:
+Output:
 
 Optimal integer solution found:
-x1 = ...
-x2 = ...
-Z* = ...
+x1 = …
+x2 = …
+Z* = …
 
-🧬 How It Works Internally
+⚙️ Internal Mechanics (For Academic Study)
+Constraint processing
 
-Constraint preprocessing ensures RHS ≥ 0
+Ensures RHS ≥ 0
 
-≥ constraints are transformed using:
+If RHS < 0 → multiply:
 
-Surplus (-1)
+coefficients
 
-Artificial (+1)
+RHS
 
-Objective row is adjusted using:
+flip inequality direction
 
-+M artificial coefficients
+Constraint transformations
+Constraint Type	Tableau Representation
+<=	+ slack
+>=	– surplus + artificial
+=	+ artificial
+Big-M objective row adjustment
 
-−M artificial basic row projection
+Artificial variables added with –M penalty
 
-Pivot steps use:
+Basic artificial rows projected into objective row
 
-Most negative entering variable
+Pivot rules
 
-Minimum ratio test
+Entering: most negative objective coefficient
 
-Artificial feasibility check ensures:
+Leaving: minimum ratio test
 
-If any artificial variable > 0 ⇒ infeasible
+Artificial feasibility check:
 
-Branch & Bound:
+any artificial > 0 ⇒ infeasible
 
-Solves LP relaxation first
+Branch & Bound Logic
 
-Checks integer feasibility
+Solve LP relaxation using Big-M simplex
 
-Adds two branching constraints:
+If integer → save solution
+
+If fractional:
+
+split on variable xk:
 
 xk ≤ floor(xk)
 
 xk ≥ ceil(xk)
 
+Continue recursively until best integer optimum is found
+
 🛡️ Numerical Safety
-
-Implemented safeguards:
-
-Max iteration limit
 
 EPS tolerance
 
-Infeasibility detection
+Max iteration safeguard
 
-Unbounded detection
+Detects:
 
-Integer rounding only after feasibility
+infeasible
 
-🚫 Limitations
+unbounded
 
-Only maximization supported in this version
+numerical degeneracy
 
-No column merging/variable removal
+🚫 Known Limitations
+
+Only maximization (minimization coming soon)
+
+No dual outputs
 
 No sensitivity analysis yet
 
-No graphical UI (terminal based)
+Terminal UI only
+
+Fraction formatting is decimal, not symbolic
 
 🎓 Academic Use Cases
 
+This toolkit is perfect for:
+
 OR Assignments
 
-LP Viva Exams
+Exam labs
 
-Integer Programming Tutorials
+Tableau demonstrations
 
-Classroom Demonstrations
+Viva preparation
 
-Hand-based tableau verification
+Integer programming tutorials
 
-This is not a black-box solver — it shows the entire simplex iteration process clearly.
+Classroom teaching
 
-✨ Future Enhancements (Planned)
+🧾 Students can verify hand calculations step-by-step using the printed tableaux.
+
+🔮 Future Enhancements
+
+Planned:
 
 Minimization support
 
@@ -255,33 +291,32 @@ Two-Phase simplex mode
 
 Dual simplex
 
-Save tableaux to file
-
-Automatic Z row labeling
+CSV / file export for tableaus
 
 Fraction visualization
 
+GUI version
+
 🧑‍💻 Author
 
-This solver was written collaboratively with the assistance of ChatGPT to serve as a transparent, educational alternative to large OR libraries.
+Developed collaboratively with ChatGPT to provide a transparent & exam-ready OR solver for students and instructors.
 
-⭐ Star the Repo
+⭐ Support
 
-If this project helps you in your academic work, give it a ⭐ on GitHub 🙌
-Sharing helps more students learn OR properly without external solvers.
+If this project helps with your coursework, please star the repo ⭐ — it helps more students learn Operations Research without black-box solvers.
 
-🙌 Contributions
+📝 License
 
-PRs welcome for:
+MIT License — open source and free to use for learning, research, or assignment work.
+
+❤️ Contributions Welcome
+
+PRs invited for:
 
 Minimization models
 
-Two-Phase version
+GUI implementations
 
-Graphical UI
+Two-phase method
 
-Tableau saving / CSV / export
-
-🏁 License
-
-MIT License — free to use, study, and improve.
+Export utilities
